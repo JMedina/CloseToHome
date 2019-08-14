@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Geocoding Service</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="floating-panel">
+      <input id="address" type="textbox" value="Sydney, NSW">
+      <input id="submit" type="button" value="Geocode">
+    </div>
+    <div id="map"></div>
+    <script>
+        
+var massShootings = [
+"6744 Regent St, Pennsylvania",
+"6346 Midlothian Turnpike, Virginia",
+"7300 block of S Artesian Ave, Illinois",
+"4900 block of Plover Ave, Missouri",
+"5691 Suitland Rd, Maryland",
+"216 Buffalo Ave, New York",
+"1800 S Kildare Ave, Illinois",
+"443 E Shelby Dr, Tennessee",
+"2900 block of W Roosevelt Rd, Illinois",
+"419 E 5th St, Ohio",
+"7101 Gateway Blvd, Texas",
+"200 block of N Broad St, Virginia",
+"1280 E Long St, Ohio",
+"2600 block of Carroll St, Pennsylvania",
+"7050 Miller Ave, California",
+"16964 54th Ave, Wisconsin",
+"637 T St NW, District of Columbia",
+"3938 W Roosevelt Rd, Illinois",
+"505 N Rock Rd, Kansas",
+"1555 Linden Blvd, New York",
+"E 10th Ave, Washington",
+"21901 Roscoe Boulevard, California",
+"3900 block of Roosevelt Rd, Illinois",
+"2300 block of 15th St NE, District of Columbia",
+"501 Waddell Ave, Pennsylvania",
+"2800 block of Boarman Ave, Maryland",
+"2401 N Lake Shore Dr, Illinois",
+"3427 W Fulton Blvd, Illinois",
+"N Elder Ave and E Colgate St, Texas",
+"6989 San Pedro Ave, Texas",
+"1572 Hardee St NE, Georgia",
+"4600 block of W Erie St, Illinois",
+"7900 block of S Loomis Blvd, Illinois",
+"5433 Lansdowne Ave, Pennsylvania",
+"5901 Royal Palms St, Texas",
+"3900 Martin Luther King Jr Ave SW, District of Columbia",
+"Clio Rd and Myrtle St, Michigan",
+"N Tucker Blvd and Convention Plaza, Missouri",
+"5600 block of S Paulina St, Illinois",
+"600 block of W 61st Pl, Illinois",
+"211 Gold Ave SW, New Mexico",
+"3036 Quinto Way, California",
+"1921 Chambers Rd, Missouri",
+"Maple St, Massachusetts",
+"600 block of Spokane St, Nevada",
+"1600 block of E 67th St, Illinois",
+"Elton St and Belmont Ave, New York",
+"800 block of N Homan Ave, Illinois",
+"1100 block of Preston St, Illinois",
+"1900 block of Adair St, California",
+"4700 block of E Hamilton Ave, California",
+"5507 Everhart Manor Ln, Texas",
+"6250 Page Ave, Missouri",
+"1200 block of N Luzerne Ave, Maryland",
+"3000 block of Brookdale Ave, California",
+"12700 block of California St, California",
+"3535 Munger Ave, Texas",
+"Farragut Ave, New York",
+"Judson St and Martin St, Connecticut",
+"2700 block of W Park Ave, Louisiana",
+"2400 block of W Jackson Blvd, Illinois",
+"7132 Florida Blvd, Louisiana",
+"909 Desoto St, Minnesota",
+"50 block of Jefferson St, New Jersey",
+"937 Choate Ave, Connecticut",
+"Ira St and Bass St SW, Georgia",
+"167 Armstrong Ave, New Jersey",
+"600 block of Parkway Dr, Georgia",
+"900 block of Rowe St, Ohio",
+"2800 block of N 34th St, Wisconsin",
+"568 Habbitts Court, California",
+"1150 E Mishawaka Ave, Indiana",
+"7500 block of Draper Ave, California",
+"1767 Genessee Ave, Ohio",
+"1108 Cambridge St, South Carolina",
+"1st St and E Pembroke Ave, Virginia",
+"2400 block of Moore St, Pennsylvania",
+"800 block of N Port St, Maryland",
+"1506 N Charles St, Michigan",
+"6300 block of S King Dr, Illinois",
+"519  West Taylor St, California",
+"700 block of 14th St, California",
+"343 Hamilton St, Pennsylvania",
+"700 block of Dr Martin Luther King Jr Blvd, New Jersey",
+"E Market St and Tower of the Americas Way, Texas",
+"2872 Coach Dr, Tennessee",
+"2910 S 70th St, Pennsylvania",
+"Dixie Highway and Ormsby Ave, Kentucky",
+"1200 block of Sampson St, Iowa",
+"2500 block of Hollywood Ave, Louisiana",
+"305 N Graham St, North Carolina",
+"6900 Block of Damascus Rd, Georgia",
+"12500 block of E Kansas Pl, Colorado",
+"17218 Tarkington Ave, Ohio",
+"2081 Niagara St, New York",
+"265 N Main St, Tennessee",
+"5151 Medicine Valley Rd, Washington",
+"3500 block of W North Ave, Illinois",
+"8220 TX-71, Texas",
+"2500 block of N Lake Shore Dr, Illinois",
+"828 W 9th Street, California",
+"473 Main St S, South Carolina",
+"12 Broad Street, Georgia",
+"300 block of East Chicago Ave, Illinois",
+"Suzanne Dr and Robinson Dr, Georgia",
+"1100 block of Mt Vernon Ave, Virginia",
+"5600 block of West Madison St, Illinois",
+"306 N Hollow Ave, California",
+"2405 Courthouse Drive, Virginia",
+"14000 block of Grace Ave, Illinois",
+"26311 TX-321, Texas",
+"300 block of Homewood Place, Louisiana",
+"5900 block of Goodfellow Blvd, Missouri",
+"1200 block of Sumner Rd SE, District of Columbia",
+"100 block of Walnut St, New Jersey",
+"3509 Wheeler Rd SE, District of Columbia",
+"800 block of Alvis Road, Virginia",
+"600 block of E Oak St, California",
+"225 Brunswick Ave, New Jersey",
+"Holly Cove Dr and Schooner Trail, Virginia",
+"3400 block of Devonshire, Michigan",
+"500 block of N Belnord Ave, Maryland",
+"N Kelley Ave and NE 26th St, Oklahoma",
+"8118 E 16th St, Oklahoma",
+"1900 block of Bacon Street, Louisiana",
+"2424 Sullivant Ave, Ohio",
+"226 SE Madison St, Oregon",
+"700 Leverette Ln, Mississippi",
+"2410 W. Euclid Ave, Indiana",
+"1616 West Pacific Coast Highway, California",
+"70 Kirkwood Ct SW, Iowa",
+"2825 Y St, Nebraska",
+"4252 Cody Drive, North Carolina",
+"100 Martin Luther King Avenue, Alabama",
+"7326 Stockton Blvd, California",
+"9500 Cardwell Ave, Ohio",
+"100 block of St. Rose Ave, Louisiana",
+"1248 W 47th St, California",
+"2100 block of 4th St, Louisiana",
+"4047 Shreve Ave, Missouri",
+"Toll Rd and Bayberry Rd, Pennsylvania",
+"275 W Buck St, New Jersey",
+"1900 block of N Croskey St, Pennsylvania",
+"4000 block of Ashland Ave, Missouri",
+"Roache St and Rader St, Indiana",
+"8773 S Ridgeline Blvd, Colorado",
+"2033 45th Street, New Jersey",
+"1001 Cabrillo Hwy, California",
+"Union Blvd and Northland Ave, Missouri",
+"101 W Maryland St, Indiana",
+"5105 Holiday Dr, California",
+"W 27th St and Tatnall St, Delaware",
+"5400 Cedar Springs Rd, Texas",
+"1900 block of Ramsay St, Maryland",
+"2500 block of E Biddle St, Maryland",
+"32 Windermere Rd, Massachusetts",
+"9214 South Library Ln, North Carolina",
+"1407 Dr DB Todd Jr Blvd, Tennessee",
+"514 19th St Ensley, Alabama",
+"2544 Edmondson Ave, Maryland",
+"4637 Wyndtree Dr, Ohio",
+"700 N San Fernando Rd, California",
+"700 block of Monterey St, Mississippi",
+"16934 Chabad Way, California",
+"1500 block of South 31st St, Pennsylvania",
+"761 Chestnut Ave, Tennessee",
+"2900 block of Sunrise Ave, Texas",
+"1628 S George Washington Blvd, Kansas",
+"4000 block of Bells Ln, Kentucky",
+"18700 block of Curry Powder Ln, Maryland",
+"2539 E Main St, California",
+"100 block of Princeton Ave, California",
+"NW 19th Ave and 60th St, Florida",
+"23500 block of Alessandro Blvd, California",
+"119 N Washington St, Illinois",
+"2200 block of Ruskin Ave, Maryland",
+"E 103rd St and S Main St, California",
+"7112 W Minnezona Ave, Arizona",
+"5339 Michigan Ave, Missouri",
+"3600 block of Roosevelt Ave, Indiana",
+"515 N Cherry St, North Carolina",
+"940 N Pine St, Delaware",
+"433 Flournoy Lucas Rd, Louisiana",
+"500 block of Kissimmee St, Florida",
+"6300 block of S Seeley Ave, Illinois",
+"300 block of Eagle Ct, Georgia",
+"100 block of Allen Ave, Florida",
+"13195 MS 18, Mississippi",
+"300 block of 13th St, Kentucky",
+"500 block of N Hamlin Ave, Illinois",
+"1900 block of Jacksonville Rd, South Carolina",
+"3041 Landrum Dr SW, Georgia",
+"6200 block of Boston St, Maryland",
+"2400 block of W San Miguel St, Nevada",
+"1300 Fillmore St, California",
+"2202 W McDowell Rd, Arizona",
+"8526 N 27th Ave, Arizona",
+"900 block of Broad St, Georgia",
+"Dennis St, Georgia",
+"600 E Fremont St, Nevada",
+"619 Ferry Ave, New Jersey",
+"515 Dauphin Island Pkwy, Alabama",
+"5145 Airway Blvd, Montana",
+"291 12th Ave, New Jersey",
+"2700 block of San Jacinto Ave, Louisiana",
+"15th St and Market St, Colorado",
+"316 14th St, California",
+"2900 block of E 79th St, Illinois",
+"723 East 25th Ave, Arkansas",
+"9755 Edes Ave, California",
+"1100 block of Carnation Dr, Alabama",
+"500 block of Bloom St, Maryland",
+"600 N Miles St, Kentucky",
+"12800 block of Eastbrook Dr, Texas",
+"529 N College St, Tennessee",
+"504 S Van Buren St, Texas",
+"664 E Illinois St, Indiana",
+"Tulane Ave and Elk Pl, Louisiana",
+"1214 Foxhill Dr, Mississippi",
+"641 Archer Ave, Illinois",
+"5905 Redpoll Ave, Florida",
+"3628 FM 3126, Texas",
+"109 Perry St, Virginia",
+"1778 Fulton St, New York",
+"538 Hot Wells Blvd, Texas",
+"2341 Pennsylvania Avenue SE, District of Columbia",
+"4000 block of Topeka St, Louisiana",
+"E Sunny Dunes Rd and El Placer Rd, California",
+"938 E 75th St, Illinois",
+"6800 block of Springfield St, California",
+"7815 Harding St, Texas",
+"Avenue O and Warrior Rd, Alabama",
+"300 block of W Roosevelt, Georgia",
+"2957 N Sherman Dr, Indiana",
+"612 Bergen St, New Jersey",
+"42350 Church Point Rd, Louisiana",
+"1450 S Atherton St, Pennsylvania",
+"319 Williamson St, Georgia",
+"1901 US 27 S, Florida",
+"26133 SW 139th Ave, Florida",
+"1140 Church St, Pennsylvania",
+"7041 Sherman St, Texas",
+"1435 Wilcox Ave, South Carolina",
+"4400 block of W Madison St, Illinois",
+"11445 Brian Lakes Drive, Florida",
+"940 Audubon Ave, Kentucky",
+"Emerson St and Spring Park Rd, Florida",
+"Ranch Center Dr and 40th St W, California",
+"5420 Baseline Rd, Arkansas",
+"2445 E Van Buren St, Arizona",
+"1300 block of W College Blvd, New Mexico",
+"3197 Shula Dr, Virginia",
+"22501 Hawthorne Blvd, California",
+"3516 Galaxy St, Arkansas",
+"1709 Decker Blvd, South Carolina",
+"2020 W Pensacola St, Florida",
+"4462 Denison Ave, Ohio",
+"904 S Main St, Ohio",
+"150 Whetstone Dr, Missouri",
+"2176 Main St, Louisiana",
+"1042 W College St, Missouri",
+"3528 S Maryland Pkwy, Nevada",
+"3942 Park Heights Ave, Maryland",
+"239 NW 16th St, Florida",
+"700 block of Geiger Ct, Colorado",
+"4505 N Broad St, Pennsylvania",
+"Caspari St and University Pkwy, Louisiana",
+"Lees Mill Rd, North Carolina",
+"3554 E Washington Ave, Wisconsin",
+"801 S Inglewood Ave, California",
+"89-25 130th St, New York",
+"NW Fifth Ave and NW Eighth St, Florida",
+"Tammy Dr, Tennessee",
+"Floyd St and Field St, Alabama",
+"4500 block of Yale St, Texas",
+"1000 block of 24th St, California",
+"5801 NW 27th Ave, Florida",
+"6100 block of Downingtown Dr, Indiana",
+"4200 block of Shreve Ave, Missouri",
+"5100 block of Malcolm St, Pennsylvania",
+"1200 21st Street, Colorado",
+"95th St and Defiance Ave, California",
+"4405 W 14th St, Arkansas",
+"4896 Gus Young Ave, Louisiana",
+"2007 Blue Pine Ln, Indiana",
+"CR 1 and Defiance Draw Rd, New Mexico",
+"4640 Woods Crossroads Rd, North Carolina",
+"598 N Broad St, Arizona",
+"99 Rolling Oaks Dr, California",
+"136 Franklin St, New York",
+"5800 block of Brayton Ave, California",
+"1950 Thomasville Rd, Florida",
+"3400 block of Girard Ave N, Minnesota",
+"906 E Locust St, Missouri",
+"19000 block of Langholm St, Michigan",
+"Woodrow Ave and Reis Ave, California",
+"65th Place and Vermont Avenue, California",
+"3252 Mission Inn Ave, California",
+"2 Whites Quarters, Arkansas",
+"4275 Lady Slipper Ln, Tennessee",
+"5898 Wilkins Ave, Pennsylvania",
+"77 Brinkerhoff St, New Jersey",
+"6200 block of S King Dr, Illinois",
+"9231 S Cottage Grove Av, Illinois",
+"900 block of A Philip Randolph Blvd, Florida",
+"8722 S Tacoma Way, Washington",
+"Broad St, Georgia",
+"1075 Carters Creek Pike, Tennessee",
+"2815 W Lake Mead Blvd, Nevada",
+"5310 E Rosedale St, Texas",
+"2500 block of Pulgas Ave, California",
+"400 block of Midlothian Road, Missouri",
+"511 Wilburn St, Texas",
+"1620 John B White Sr Blvd, South Carolina",
+"6500 block of W Charleston Blvd, Nevada",
+"Joppa Ave, Alabama",
+"9453 E 31st St, Oklahoma",
+"6802 Cullen Blvd, Texas",
+"Williams St and Telegraph Ave, California",
+"1813 N Riverside Dr, New Mexico",
+"Lucky St, Georgia",
+"5101 Germantown Ave, Pennsylvania",
+"932 Ashton Dr, South Carolina",
+"500 block of S Michigan Ave, Illinois",
+"200 block of N Long Beach Blvd, California",
+"1700 block of 24th St, Florida",
+"5100 block of Haverford Ave, Pennsylvania",
+"1528 Ragan St, Tennessee",
+"2600 block of Chandler Court, California",
+"3700 block of Loma Lane, California",
+"1800 block of Benning Rd, District of Columbia",
+"Dolan St, New York",
+"1501 Perryman Rd, Maryland",
+"1317 Midland Ave, New York",
+"1850 Deming Way, Wisconsin",
+"W Cermak Rd and S State St, Illinois",
+"1 E Church St, Pennsylvania",
+"1100 block of Sumner St, Louisiana",
+"4622 Faronia Rd, Tennessee",
+"123 Amberleigh Dr, Maryland",
+"820 S 21st St, Wisconsin",
+"660 Manwell Blvd, California",
+"10600 block of S Bensley Avenue, Illinois",
+"140 Lt George W Lee Ave, Tennessee",
+"224 W Magnolia St, Alabama",
+"N/A, Florida",
+"550 S McLean Blvd, Illinois",
+"2024 N Washington Ave, Minnesota",
+"511 Walnut St, Ohio",
+"1200 block of Gillespie Ave, Georgia",
+"801 Garrison Ave, Arkansas",
+"600 block of Morningview St, Texas",
+"500 23rd St S, Alabama",
+"43 12th Ave, New Jersey",
+"1277 East Lynwood Drive, California",
+"Stuyvesant Ave and Bryn Mawr Ave, New Jersey",
+"3232 Lakeside Ave East, Ohio",
+"5225 NW 24th Ct, Florida",
+"1900 block of Peoria St, Colorado",
+"2600 block of W 34th Ave, Arkansas",
+"2 Independent Dr, Florida",
+"2400 block of Sheppard Access Rd, Texas",
+"4 N 18th St, Virginia",
+"1564 9th Ave N, Tennessee",
+"5800 block of Oakland St, Pennsylvania",
+"1700 block of Homestead St, Maryland",
+"I-64 and Jefferson Ave, Missouri",
+"2119 E Alcy Rd, Tennessee",
+"60 Heritage Square, Tennessee",
+"E 94th St and Kinsman Rd, Ohio",
+"7400 block of S Dante Ave, Illinois",
+"925 Allerton Ave, New York",
+"1600 block of W 65th St, Illinois",
+"Mimosa Ct, South Carolina",
+"1000 S Easton Rd, Pennsylvania",
+"4786 Yarrington Ct, California",
+"5600 block of Broad St, Pennsylvania",
+"1280 Summit St, Ohio",
+"Geneva St and Mission St, California",
+"4050 E 100th Ave, Colorado",
+"1515 N 13th St, Missouri",
+"6300 block of Vinewood St, Michigan",
+"Mercer St and Franklin St, New Jersey",
+"North 12th Street and West Huntingdon Street, Pennsylvania",
+"1 block of N Leclaire Ave, Illinois",
+"900 block of S Karlov Ave, Illinois",
+"1600 block of S Avers Ave, Illinois",
+"1300 block of W 76th St, Illinois",
+"1300 block of S Millard Ave, Illinois",
+"E 18th St and Highland Ave, Missouri",
+"3400 block of Coran Ln, Nevada",
+"1600 block of N Leclaire Ave, Illinois",
+"40th St and Vliet St, Wisconsin",
+"1212 West 135th Street, California",
+"12328 Largo Dr, Georgia",
+"1200 block of S Avers Ave, Illinois",
+"100 block of E Maple St, Pennsylvania",
+"2501 E Van Buren St, Arizona",
+"Spring and River Street, Michigan",
+"8801 S Vermont Ave, California",
+"3400 S Claiborne Ave, Louisiana",
+"603 East Ave J, Texas",
+"1100 block of S Troy St, Illinois",
+"73rd Ave and Bancroft Ave, California",
+"18416 St Clair Ave, Ohio",
+"3019 South Blvd, Texas",
+"7000 block of Bullard Ave, Louisiana",
+"6400 block of S May St, Illinois",
+"1000 block of Dundalk Ave, Maryland",
+"3100 block of W Fulton St, Illinois",
+"500 block of S 15th St, Washington",
+"323 Irvington Ave, New Jersey",
+"7201 Melrose Ln, Oklahoma",
+"2100 block of W 28th St, Florida",
+"300 block of 53rd St NE, District of Columbia",
+"2100 block of N 4th St, Pennsylvania",
+"50th Ave and Grant St, Colorado",
+"1400 Cowart St, Tennessee",
+"9500 block of Fort Foote Rd, Maryland",
+"1401 Roseneath Rd, Virginia",
+"3678 Powers Rd, Tennessee",
+"9550 Bissonnet St, Texas",
+"16300 block of NW Gainesville Rd, Florida",
+"2709 Ferris Rd, Delaware",
+"Southland Blvd and Orange Blossom Trail, Florida",
+"565 US-80, Alabama",
+"Mount Moriah Rd and Mendenhall Rd, Tennessee",
+"135 Granite Way, Alabama",
+"280 Herkimer St, New York",
+"First St and Lexington Ave, New York",
+"1600 block of W. 2nd Street, California",
+"1800 block of Atlantic Ave, Virginia",
+"1440 Bellefontaine Ave, Ohio",
+"3400 block of Pierce St, Indiana",
+"5456 E Fayetteville Rd, Georgia",
+"1700 block of Billups Ave, Missouri",
+"1700 block of Benning Rd NE, District of Columbia",
+"Grape St, New York",
+"3400 block of W Walnut Ave, Illinois",
+"800 Block of W. Washington, Georgia",
+"4000 block of Penhurst Ave, Maryland",
+"Lexington Ave and John F Kennedy Blvd, New Jersey",
+"888 Bestgate Rd, Maryland",
+"8901 MacArthur Boulevard, California",
+"100 block of Holly Street, Texas",
+"124 Hillside Ave, Connecticut",
+"3900 block of S Vincennes Ave, Illinois",
+"109 S Steele St, North Carolina",
+"2450 Harbour Dr, Florida",
+"17068 SW Palm Beach St, Florida",
+"1200 block of W 35th St, Florida",
+"2500 block of Harrison Street, Indiana",
+"1504 Milan Rd, Ohio",
+"1403 Harding  St, Kansas",
+"100 block of East 51st St, Illinois",
+"319 N High St, Tennessee",
+"1324 Margaret St, Pennsylvania",
+"279 W Base Line, California",
+"Deaton Ln, Louisiana",
+"6500 block of S Claremont Ave, Illinois",
+"2300 block of West Hatch Road, California",
+"905 Lee Dr NW, Alabama",
+"311 Riley Dr, Illinois",
+"1300 block of S Loomis St, Illinois",
+"3215 Queen City Dr, North Carolina",
+"635 S Clinton Ave, New Jersey",
+"325 Edgewood Ln, Georgia",
+"2200 block of S Sacramento Ave, Illinois",
+"400 block of Penn St, Pennsylvania",
+"32992 Mission Blvd, California",
+"West 6th Street, California",
+"Marigold Ave, New York",
+"5150 W 80th Ave, Colorado",
+"W 166th St and  Summit Ave, New York",
+"3220 block of Virginia Pines Ln, Alabama",
+"4932 Eaglesmere Dr, Florida",
+"12719 Tiara St, California",
+"4745 N Richardt Ave, Indiana",
+"300 block of W Park Ave, Illinois",
+"1200 block of Orchard Rd, Illinois",
+"5627 14th St W, Florida",
+"6400 block of S Eberhart Ave, Illinois",
+"14 Copeland St, Massachusetts",
+"1709 S Cannon Blvd, North Carolina",
+"2000 block of 20th St, Pennsylvania",
+"Town Center Pkwy, Florida",
+"4500 Spring Ave, Texas",
+"1200 block of W 73rd Pl, Illinois",
+"S 11th St and Farnam St, Nebraska",
+"Strauss Street, New York",
+"544 Chaney Grove Rd, South Carolina",
+"857 E Stoner Ave, Louisiana",
+"15373 E 6th Ave, Colorado",
+"1000 block of Ross Avenue, Ohio",
+"1604 Madison Ave, Indiana",
+"513 Monticello St, Mississippi",
+"16000 Hwy 6, Texas",
+"610 Lone Star Park Ln, Texas",
+"2020 Etting St, Maryland",
+"2436 Belleview St, California"
+]        
+        
+function haversine(lat1, lng1, lat2, lng2) {
+    var R = 3958; // miles
+    var φ1 = lat1.toRadians();
+    var φ2 = lat2.toRadians();
+    var Δφ = (lat2-lat1).toRadians();
+    var Δλ = (lon2-lon1).toRadians();
+
+    var a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    var d = R * c;     
+}
+        
+function calculateMinDistance (lat, lng) {
+    
+    var distances = [];
+    
+    for (i = 0; i < massShootingsCoords.length; i++)
+    {
+        distances.push (haversine(lat, lng, massShootingsCoords[i].lat. massShootingsCoords[i].lng))
+    }
+    
+    var minDist = Math.min(distances);
+    console.log(minDist);
+    return minDist;
+}
+
+        
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: {lat: -34.397, lng: 150.644}
+        });
+        var geocoder = new google.maps.Geocoder();
+
+        document.getElementById('submit').addEventListener('click', function() {
+          geocodeAddress2(geocoder);
+        });
+      }
+        
+        
+        
+      function geocodeAddress2(geocoder) {
+          
+        for (i = 0; i < massShootings.length; i++) {  
+            geocoder.geocode({'address': massShootings[i]}, function(results, status) {
+          
+                
+            if (status === 'OK') {    
+              console.log(results[0].geometry.location.lat() + ", " + results[0].geometry.location.lng());  
+              
+            }// else {
+//                alert('Geocode was not successful for the following reason: ' + status);
+//              }
+            });
+          }  
+      }
+ 
+        
+      function geocodeAddress(geocoder) {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+              
+              console.log("[" + results[0].geometry.location.lat() + ", " + results[0].geometry.location.lng() + "],");
+
+              
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAqDaVJ_ziSR8vUKQFgGTYWqgle9CcqRBM&callback=initMap">
+    </script>
+  </body>
+</html>
